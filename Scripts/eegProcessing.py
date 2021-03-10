@@ -42,7 +42,7 @@ for filename in tqdm(file_list):
     print("COMPLETED " + filename)
 
 ##pickle output file (dictionary with 32 elements)
-outfile = open('epochedList.dat', 'wb')
+outfile = open('/Users/chriskye 1/Desktop/ResFinal/Data/channelPSD.dat', 'wb')
 pickle.dump(processedRaw, outfile)
 outfile.close()
 
@@ -66,7 +66,7 @@ def relativeWelchPSD(data, band, win, sf):
     return bp
 
 ## Extract for each epoch
-channelPSD = np.empty((32, 8, 1)) ###TEST
+channelPSD = np.empty((32, 8, 1)) 
 
 keys = list(processedRaw.keys())
 for i in range(32): ## subjects
@@ -74,33 +74,36 @@ for i in range(32): ## subjects
     sub = processedRaw[keys[i]]
     rawPSD = np.empty((32, 8, 2400)) ## channel x band x epoch
     for channelNo in tqdm(range(32)): ## channels
-        for epoch in range(2400): ###TEST
-                rawPSD[channelNo, 0, epoch] = relativeWelchPSD(sub[channelNo,...,epoch], [4,6], 1, 128)
-
+        for epoch in range(2400): 
+                ##Low Theta
+                rawPSD[channelNo, 0, epoch] = relativeWelchPSD(sub[channelNo,...,epoch], [4,6], 1, 128) 
+                
+                ##High THeta
                 rawPSD[channelNo, 1, epoch] = relativeWelchPSD(sub[channelNo,...,epoch], [6,8], 1, 128)
 
+                ##Low Alpha
                 rawPSD[channelNo, 2, epoch] = relativeWelchPSD(sub[channelNo,...,epoch], [8,10.5], 1, 128)
 
+                ##High Alpha
                 rawPSD[channelNo, 3, epoch] = relativeWelchPSD(sub[channelNo,...,epoch], [10.5,13], 1, 128)
 
+                ##Low Beta
                 rawPSD[channelNo, 4, epoch] =  relativeWelchPSD(sub[channelNo,...,epoch], [13,21.5], 1, 128)
 
+                ##High Beta
                 rawPSD[channelNo, 5, epoch] = relativeWelchPSD(sub[channelNo,...,epoch], [21.5,30], 1, 128)
 
+                #Low Gamma
                 rawPSD[channelNo, 6, epoch] =  relativeWelchPSD(sub[channelNo,...,epoch], [30,37.5], 1, 128)
 
+                #High Gamma
                 rawPSD[channelNo, 7, epoch] = relativeWelchPSD(sub[channelNo,...,epoch], [37.5,45], 1, 128)
     print("COMPLETED SUBJECT NO. " + str(i+1))
     channelPSD = np.dstack((channelPSD, rawPSD))
 channelPSD = channelPSD[..., 0:8,1:]
 
-freqs, psd = signal.welch(output[0,...,0], sf, window = 'hann', nperseg=win)
+##pickle output file (dictionary with 32 elements)
+outfile = open('channelPSD.dat', 'wb')
+pickle.dump(channelPSD, outfile)
+outfile.close()
 
-low_theta = np.logical_and(freqs > 4, freqs <=6)
-high_theta = np.logical_and(freqs > 6, freqs <= 8)
-low_alpha = np.logical_and(freqs > 8, freqs <= 10.5)
-high_alpha = np.logical_and(freqs > 10.5, freqs <= 13)
-low_beta = np.logical_and(freqs > 13, freqs <= 21.5)
-high_beta = np.logical_and(freqs > 21.5, freqs <= 30)
-low_gamma = np.logical_and(freqs > 30, freqs <= 37.5)
-high_gamma = np.logical_and(freqs > 37.5, freqs <= 45)
