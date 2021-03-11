@@ -103,7 +103,7 @@ for i in range(32): ## subjects
 channelPSD = channelPSD[..., 0:8,1:]
 
 ##pickle output file (dictionary with 32 elements)
-outfile = open('channelPSD.dat', 'wb')
+outfile = open('/Users/chriskye 1/Desktop/ResFinal/Data/channelPSD.dat', 'wb')
 pickle.dump(channelPSD, outfile)
 outfile.close()
 
