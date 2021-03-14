@@ -41,6 +41,8 @@ for filename in tqdm(file_list):
 
     print("COMPLETED " + filename)
 
+######## Feature Type 1 - PSD Features ########
+
 ##pickle output file (dictionary with 32 elements)
 outfile = open('/Users/chriskye 1/Desktop/ResFinal/Data/channelPSD.dat', 'wb')
 pickle.dump(processedRaw, outfile)
@@ -106,4 +108,23 @@ channelPSD = channelPSD[..., 0:8,1:]
 outfile = open('/Users/chriskye 1/Desktop/ResFinal/Data/channelPSD.dat', 'wb')
 pickle.dump(channelPSD, outfile)
 outfile.close()
+
+######## Feature Type 2 - Raw Features ########
+rawFeatures = np.zeros((32, 128, 1))
+
+keys = list(processedRaw.keys())
+
+for i in tqdm(range(len(keys))):
+    batch = processedRaw[keys[i]]
+    rawFeatures = np.append(rawFeatures, batch, axis = 2)
+    
+rawFeatures = rawFeatures[0:32,0:128,1:]
+
+outfile = open('/Users/chriskye 1/Desktop/ResFinal/Data/rawFeatures.dat', 'wb')
+pickle.dump(rawFeatures, outfile)
+outfile.close()
+
+
+
+
 
